@@ -1,0 +1,720 @@
+---
+title: "End of The Month Report"
+author: "Jeremy Demlow"
+date: "May, 2018"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+#Note Your Big Data Class will have you mess up your computer so you might need this in the future
+Sys.setenv(JAVA_HOME='...path to JRE...')
+Sys.setenv(JAVA_HOME='C:\\Program Files\\Java\\jdk1.8.0_161\\jre')
+library(rJava)
+library(xlsx)
+library(reshape2)
+library(stringr)
+library(lubridate)
+library(stringr)
+library(tidyr)
+library(xlsx)
+library(dplyr)
+library(data.table)
+library(chron)#dealing with date time
+library(Rcpp)
+library(RSQLite)
+library(sqldf)
+library(tcltk2)
+library(lubridate)
+library(urltools)
+```
+
+## BRAC REPORT
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+#Input Data
+jobs <- read.csv("C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/alljobs.csv")
+brac <- read.csv("C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/BRAC-LJC_Master.csv")
+
+```
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+#This is looking at at jobs column "EmployerName" then you are saying change using the function
+jobs$EmployerName <- toupper(jobs$EmployerName)
+brac$EmployerName <- toupper(brac$EmployerName)
+```
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+#SQL Method
+filtered <- sqldf::sqldf("Select *
+                  from jobs 
+                  where EmployerName in (Select EmployerName from brac)")
+#This order of columns may change... Verify report matches layout of November 2016
+colnames(filtered)
+#Currently As of May 4th These are the ones they want. 
+brac_jobs <- filtered[,c("DateCreated","Title","EmployerName","IndustryName","City","Education","JobType","NoAvailablePositions")]
+
+brac_jobs$City = as.character(brac_jobs$City)
+brac_jobs$City = tolower(brac_jobs$City)
+#brac_jobs$City.1 = tolower(brac_jobs$City.1)
+brac_jobs$City = ifelse(brac_jobs$City == " ", 'City Not Specified', brac_jobs$City)
+```
+
+##BRAC Jobs July_2018 by Education Type Being Sought
+```{r, echo=FALSE, warning=FALSE}
+brac_jobs %>% 
+  group_by(Education) %>%
+  summarise(
+    Count = n(),
+    Percent = round((Count/nrow(brac_jobs)),3)
+    ) %>% arrange(desc(Count))
+```
+
+##BRAC Jobs July_2018 by Industry Type Having Job Openings
+```{r, echo=FALSE, warning=FALSE}
+brac_jobs %>% 
+  group_by(IndustryName) %>%
+  summarise(
+    Count = n(),
+    Percent = round((Count/nrow(brac_jobs)),3)
+  ) %>% arrange(desc(Count))
+```
+
+##BRAC Jobs July_2018 by the Job Types 
+```{r, echo=FALSE, warning=FALSE}
+brac_jobs %>% 
+  group_by(JobType) %>%
+  summarise(
+    Count = n(),
+    Percent = round((Count/nrow(brac_jobs)),3)
+  ) %>% arrange(desc(Count))
+```
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+Education_Required = brac_jobs %>% 
+  group_by(Education) %>%
+  summarise(
+    Count = n(),
+    Percent = round((Count/nrow(brac_jobs)),3)
+    ) %>% arrange(desc(Count))
+
+Industury_Type = brac_jobs %>% 
+  group_by(IndustryName) %>%
+  summarise(
+    Count = n(),
+    Percent = round((Count/nrow(brac_jobs)),3)
+  ) %>% arrange(desc(Count))
+
+Job_Type = brac_jobs %>% 
+  group_by(JobType) %>%
+  summarise(
+    Count = n(),
+    Percent = round((Count/nrow(brac_jobs)),3)
+  ) %>% arrange(desc(Count))
+
+City_Of_Job= brac_jobs %>%
+  group_by(City) %>%
+  summarise(
+    Count = n(),
+    Percent = round((Count/nrow(brac_jobs)),3)
+  ) %>% arrange(desc(Count))
+
+```
+
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+
+write.xlsx(brac_jobs, "C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/BRAC-REPORT-July_2018.xlsx",
+           sheetName="All_Data", col.names=TRUE, row.names=FALSE, append=FALSE, showNA=FALSE)
+write.xlsx(as.data.frame(Education_Required), "C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/BRAC-REPORT-July_2018.xlsx",sheetName="Education_Required",
+           col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
+write.xlsx(as.data.frame(Industury_Type), "C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/BRAC-REPORT-July_2018.xlsx", sheetName="Industury_Type", 
+           col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
+write.xlsx(as.data.frame(Job_Type), "C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/BRAC-REPORT-July_2018.xlsx", sheetName="Job_Type", 
+           col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
+write.xlsx(as.data.frame(City_Of_Job), "C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/BRAC-REPORT-July_2018.xlsx", sheetName="City_Of_Job", 
+           col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
+```
+
+
+## LJC Job Seeker For The Month Overview
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+library(lubridate)
+library(dplyr)
+job.seeker <- read.csv("C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/jobseekers.csv", header = T)
+```
+
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+str(job.seeker$RegistrationSource)
+names(job.seeker) <- tolower(names(job.seeker))
+
+#We need to get the date match the pattern before we can actaully get anything done so we will make objects to allow this to happen. 
+date.string <- job.seeker$dateregistered
+head(job.seeker$dateregistered)
+str(job.seeker$dateregistered)
+job.seeker$dateregistered <- as.character(job.seeker$dateregistered)
+
+#Website to see the different type of patterns used: #https://stat.ethz.ch/R-manual/R-devel/library/base/html/strptime.html
+date.time <- strptime(date.string, format = "%m/%d/%Y %H:%M:%S") #NOTE THIS CHANGES 
+
+#To help Subesetting we can put this together to allow years to be sepearted with ease
+date.year  <- year(date.time)
+date.month <- month(date.time)
+
+#add to data set
+job.seeker$Reg.Date  <- date.time
+job.seeker$Year.Reg  <- date.year
+job.seeker$Month.Reg <- date.month
+colnames(job.seeker)
+#deleting useless columns changes depending on the SQL query they choose
+#With issues In March All Data Will Be Given Now
+#job.seeker <- job.seeker[ , -c(3:4,12:21)]
+
+#Looking at the last month needs to change every month
+date1 <- as.Date("2018-07-01")
+date2 <- as.Date("2018-07-31")
+interval <- interval(date1, date2)
+
+job.seeker$Reg.Date <- as.Date(job.seeker$Reg.Date)
+July_2018.added <- job.seeker[job.seeker$Reg.Date %within% interval,]
+```
+
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+Url_Source <- July_2018.added$registrationsource
+Url_Source <- as.character(Url_Source)
+
+library(urltools)
+url_breakdown <- url_parse(Url_Source)
+url_breakdown <- subset(url_breakdown, select = c("path")) 
+July_2018.added<- cbind(July_2018.added, url_breakdown)
+
+table(July_2018.added$path)
+```
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+location_data <- read.csv("C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/jobseekers_latlng.csv", header = TRUE)
+
+#allows names to be lowered
+July_2018.added$current.city <- tolower(July_2018.added$current.city)
+July_2018.added$current.city <-trimws(July_2018.added$current.city, which = "both")
+colnames(July_2018.added)[1] = "id"
+colnames(location_data)[1] = "JobSeekerID"
+July_2018.added <- merge(x=July_2018.added,
+                  y=location_data, 
+                  by.x = c("id"),
+                  by.y = c("JobSeekerID"),
+                  all.x = TRUE,
+                  all.y = FALSE)
+```
+
+## July_2018 Adds by City
+```{r, echo=FALSE, warning=FALSE}
+July_2018.added %>%
+  group_by(July_2018.added$City) %>%
+  summarise(
+    n = n(), 
+    percent = n/nrow(July_2018.added)
+  )%>%
+  arrange(desc(n))
+```
+## July_2018 Adds by Degree Type
+```{r, echo=FALSE, warning=FALSE}
+July_2018.added %>%
+  group_by(July_2018.added$degree) %>%
+  summarise(
+    n = n(), 
+    percent = n/nrow(July_2018.added)
+  )%>%
+  arrange(desc(n))
+```
+
+## July_2018 Adds by Resume Completion
+```{r, echo=FALSE, warning=FALSE}
+July_2018.added %>%
+  group_by(July_2018.added$resumecompletefl) %>%
+  summarise(
+    n = n(), 
+    percent = n/nrow(July_2018.added)
+  )%>%
+  arrange(desc(n))
+```
+## July_2018 Adds by Resume Preferred Location
+```{r, echo=FALSE, warning=FALSE}
+July_2018.added %>%
+  group_by(July_2018.added$preferredlocation) %>%
+  summarise(
+    n = n(), 
+    percent = n/nrow(July_2018.added)
+  )%>%
+  arrange(desc(n))
+```
+## July_2018 Adds by Path Location of Sign Up
+```{r, echo=FALSE, warning=FALSE}
+July_2018.added %>%
+  group_by(July_2018.added$path) %>%
+  summarise(
+    n = n()
+  )%>%
+  arrange(desc(n))
+```
+
+## July_2018 Adds by Current City
+```{r, echo=FALSE, warning=FALSE}
+July_2018.added %>%
+  group_by(July_2018.added$state) %>%
+  summarise(
+    n = n(), 
+    percent = n/nrow(July_2018.added)
+  )%>%
+  arrange(desc(n))
+```
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+Cities = July_2018.added %>%
+  group_by(July_2018.added$City) %>%
+  summarise(
+    n = n(), 
+    percent = n/nrow(July_2018.added)
+  )%>%
+  arrange(desc(n))
+
+Degrees = July_2018.added %>%
+  group_by(July_2018.added$degree) %>%
+  summarise(
+    n = n(), 
+    percent = n/nrow(July_2018.added)
+  )%>%
+  arrange(desc(n))
+
+Resume_Completed = July_2018.added %>%
+  group_by(July_2018.added$resumecompletefl) %>%
+  summarise(
+    n = n(), 
+    percent = n/nrow(July_2018.added)
+  )%>%
+  arrange(desc(n))
+
+Preferred_Location = July_2018.added %>%
+  group_by(July_2018.added$preferredlocation) %>%
+  summarise(
+    n = n(), 
+    percent = n/nrow(July_2018.added)
+  )%>%
+  arrange(desc(n))
+
+PagePath = July_2018.added %>%
+  group_by(July_2018.added$path) %>%
+  summarise(
+    n = n(),
+    mean = mean(resumecompletefl)
+  )%>%
+  arrange(desc(n))
+
+Current_State = July_2018.added %>%
+  group_by(July_2018.added$state) %>%
+  summarise(
+    n = n(), 
+    percent = n/nrow(July_2018.added)
+  )%>%
+  arrange(desc(n))
+```
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+#All_Data
+write.xlsx(July_2018.added, "C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/July_2018_Added_Members.xlsx",
+           sheetName="All_Data", col.names=TRUE, row.names=FALSE, append=FALSE, showNA=FALSE)
+#Cities
+write.xlsx(as.data.frame(Cities),"C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/July_2018_Added_Members.xlsx",
+           sheetName="Cities", col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
+
+write.xlsx(as.data.frame(Degrees), "C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/July_2018_Added_Members.xlsx",
+           sheetName="Degrees",col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
+#Resume Complete
+write.xlsx(as.data.frame(Resume_Completed),"C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/July_2018_Added_Members.xlsx",
+           sheetName="Resume_Completed",col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
+#Preferred_Location
+write.xlsx(as.data.frame(Preferred_Location), "C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/July_2018_Added_Members.xlsx",
+           sheetName="Preferred_Location",col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
+#PagePath
+write.xlsx(as.data.frame(PagePath), "C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/July_2018_Added_Members.xlsx",
+           sheetName="PagePath",col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
+#Current State
+write.xlsx(as.data.frame(Current_State), "C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/July_2018_Added_Members.xlsx",
+           sheetName="Current_State",col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
+```
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+#Just a check to understand it's working
+July_2018.added %>%
+  group_by(July_2018.added$state) %>%
+  tally() %>% arrange(desc(n))
+
+
+July_2018.added$path <- as.factor(July_2018.added$path)
+July_2018.added$Latitude = as.numeric(July_2018.added$Latitude)
+July_2018.added$Longitude = as.numeric(July_2018.added$Longitude)
+library(ggplot2)
+
+##There is an issue with this, I probably will not fix this and my advice is use Tabelau to make the Map Chart
+##There is some werid issue I might look into, but the Tabelau Map looks 100x better
+ggplot(July_2018.added, aes(Longitude, Latitude, colour = path)) + 
+  geom_point() +
+  coord_quickmap()+
+  borders("state")+
+  theme_get()+
+  ggtitle("Registration For LJC During The Month of July_2018")+
+  labs(colour = "Reg Source")
+```
+
+```{r, echo=FALSE, warning=FALSE}
+library(ggplot2)
+
+##There is an issue with this, I probably will not fix this and my advice is use Tabelau to make the Map Chart
+##There is some werid issue I might look into, but the Tabelau Map looks 100x better
+ggplot(July_2018.added, aes(Longitude, Latitude, colour = path)) + 
+  geom_point() +
+  coord_quickmap()+
+  borders("state")+
+  theme_get()+
+  ggtitle("Registration For LJC During The Month of July_2018")+
+  labs(colour = "Reg Source")
+```
+
+## LJC Employer & Job Seeker Feedback
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+EmpFeed = read.csv("C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/EmployerJobFeedback.csv", header = TRUE)
+EmpMis = read.csv("C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/EmployerMismatchSurvey.csv", header = TRUE)
+JobMis = read.csv("C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/JobSeekerMismatchSurvey.csv", header = TRUE)
+```
+
+## Employer Feedback
+```{r, echo=FALSE, warning=FALSE}
+Emp_Feed = EmpFeed %>%
+  group_by(Question, answer)%>%
+  summarise(n = n()) %>% mutate(Perc = n/sum(n))%>% 
+  arrange(desc(n))
+
+EmpFeed %>%
+  group_by(Question, answer)%>%
+  summarise(n = n()) %>% mutate(Perc = n/sum(n))%>% 
+  arrange(desc(n))
+
+```
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+#All_Data
+write.xlsx(EmpFeed, "C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/July_2018_Employer_Feedback.xlsx",
+           sheetName="All_Data", col.names=TRUE, row.names=FALSE, append=FALSE, showNA=FALSE)
+#Cities
+write.xlsx(as.data.frame(Emp_Feed),"C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/July_2018_Employer_Feedback.xlsx",
+           sheetName="Reponses", col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
+```
+
+## Employer Mismatch Feedback
+```{r, echo=FALSE, warning=FALSE}
+EmpMis %>% 
+  group_by(Reason) %>% summarise(n = n(),mean = round(mean(Match..),1)) %>% 
+  arrange(desc(n))
+
+Emp_Mis = EmpMis %>% 
+  group_by(Reason) %>% summarise(n = n(),mean = round(mean(Match..),1)) %>% 
+  arrange(desc(n))
+```
+
+```{r, echo=FALSE, include = FALSE, warning=FALSE}
+#All_Data
+write.xlsx(EmpMis, "C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/July_2018_Employer_MisMatch.xlsx",
+           sheetName="All_Data", col.names=TRUE, row.names=FALSE, append=FALSE, showNA=FALSE)
+#Cities
+write.xlsx(as.data.frame(Emp_Feed),"C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/July_2018_Employer_MisMatch.xlsx",
+           sheetName="MisMatch", col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
+```
+
+## Job Seeker Mismatch Feedback
+```{r, echo=FALSE, warning=FALSE}
+JobMis %>% 
+  group_by(Reason.For.Mismtch) %>%
+  summarise(n = n(), mean = mean(Match..))%>% 
+  arrange(desc(n))
+
+Job_Mis = JobMis %>% 
+  group_by(Reason.For.Mismtch) %>%
+  summarise(n = n(), mean = mean(Match..))%>% 
+  arrange(desc(n))
+```
+
+```{r, echo=FALSE, warning=FALSE}
+#All_Data
+write.xlsx(JobMis, "C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/July_2018_Employer_Feedback.xlsx",
+           sheetName="All_Data", col.names=TRUE, row.names=FALSE, append=FALSE, showNA=FALSE)
+#Emp_Feed
+write.xlsx(as.data.frame(Job_Mis),"C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/July_2018_Employer_Feedback.xlsx",
+           sheetName="Job_Mis", col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
+```
+
+## Information Regarding Resumes
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+library(tinytex)
+library(lubridate)
+library(dplyr)
+job.seeker <- read.csv("C:/Users/Jerem/OneDrive/Documents/Vinformatix/Vinformatix_Knowledge_Transfer/LJC/Monthly Reporting/July_2018/jobseekers.csv", header = T)
+
+names(job.seeker) <- tolower(names(job.seeker))
+
+#We need to get the date match the pattern before we can actaully get anything done so we will make objects to allow this to happen. 
+date.string <- job.seeker$dateregistered
+head(job.seeker$dateregistered)
+str(job.seeker$dateregistered)
+job.seeker$dateregistered <- as.character(job.seeker$dateregistered)
+
+#Website to see the different type of patterns used: #https://stat.ethz.ch/R-manual/R-devel/library/base/html/strptime.html
+date.time <- strptime(date.string, format = "%m/%d/%Y %H:%M:%S")
+
+#To help Subesetting we can put this together to allow years to be sepearted with ease
+date.year  <- year(date.time)
+date.month <- month(date.time)
+
+#add to data set
+job.seeker$Reg.Date  <- date.time
+job.seeker$Year.Reg  <- date.year
+job.seeker$Month.Reg <- date.month
+Url_Source <- job.seeker$registrationsource
+Url_Source <- as.character(Url_Source)
+
+library(urltools)
+url_breakdown <- url_parse(Url_Source)
+url_breakdown <- subset(url_breakdown, select = c("path")) 
+job.seeker<- cbind(job.seeker, url_breakdown)
+#colnames(job.seeker)
+#deleting useless columns changes depending on the SQL query they choose
+#job.seeker <- job.seeker[ , -c(4,6:7,11:21,27,29,33,35:36)]
+rm(Url_Source, url_breakdown)
+
+#Looking at the last month needs to change every month
+date1 <- as.Date("2018-07-01")
+date2 <- as.Date("2018-07-31")
+interval <- interval(date1, date2)
+
+str(job.seeker$Reg.Date)
+job.seeker$Reg.Date <- as.Date(job.seeker$Reg.Date)
+Last6.added <- job.seeker[job.seeker$Reg.Date %within% interval,]
+Url_Source <- Last6.added$registrationsource
+Url_Source <- as.character(Url_Source)
+
+#Resume
+date.string <- Last6.added$resume.post.date
+Last6.added$resume.post.date <- as.character(Last6.added$resume.post.date)
+date.time <- strptime(date.string, format =  "%m/%d/%Y %H:%M:%S")
+Last6.added$Resume.Date  <- date.time
+
+#Access
+date.string <-Last6.added$profile.accessed
+Last6.added$profile.accessed <- as.character(Last6.added$profile.accessed)
+date.time <-strptime(date.string, format =  "%m/%d/%Y %H:%M")
+Last6.added$access.Date <-date.time
+#colnames(Last6.added)
+#Last6.added <- Last6.added[, -c(5,10,15)]
+
+#Subset Resumes/Non-Resumes
+df <- subset(Last6.added, Last6.added$resumecompletefl == 1)
+df_na <- subset(Last6.added, Last6.added$resumecompletefl == 0)
+rm(job.seeker, date.month, date.string, date.year, date1, date2, interval, date.time,Url_Source)
+
+#Note there is system error with ljc picking up resumes before registration dates 
+df$Res_lapse <- round(difftime(df$Resume.Date, df$Reg.Date, units = "days"),1)
+df$Res_lapse  <- as.numeric(df$Res_lapse)
+df$Res_lapse  <- ifelse(df$Res_lapse < 1, 0, df$Res_lapse)
+df$rightaway <- ifelse(df$Res_lapse  == 0, "1", "0")
+```
+
+## **Who Is Completing Their Resumes**
+
+```{r, echo=FALSE, warning=FALSE}
+library(ggplot2)
+#colnames(Last6.added)
+Last6.added$access.Date <- as.POSIXct(Last6.added$access.Date)
+Last6.added$Resume.Date <- as.POSIXct(Last6.added$Resume.Date)
+Last6.added$resumecompletefl= as.factor(Last6.added$resumecompletefl)
+Last6.added$degree = as.character(Last6.added$degree)
+Last6.added$degree[Last6.added$degree==" "]<-"Missing"
+Last6.added$degree = as.factor(Last6.added$degree)
+
+Last6.added %>%
+  subset(!(Last6.added$degree == "Missing")) %>%
+  group_by(resumecompletefl,degree) %>%
+  summarise(
+    count = n()
+  )%>% group_by(degree)%>%
+  mutate(freq = paste0(round(100 * (count / sum(count)),2), "%")) %>%
+  filter(count>0) %>% arrange(degree)%>%
+  ggplot( aes(x = resumecompletefl, y = count, fill = degree)) +
+  geom_bar(stat = "identity", color = "black")+
+  geom_text(aes(label = freq, vjust= 1))+
+  facet_wrap(~degree, scale = "free_y")+ 
+  theme_light() + 
+  theme(legend.position = "none")+
+  labs(title = "Resume Completed By Degree Type",
+       caption = "1 = Resume Completed & 0 = Resume Incomplete", 
+       x = "Resume Complete Or Not")
+
+Last6.added %>%
+  group_by(resumecompletefl,path) %>%
+  summarise(
+    count = n()
+  ) %>% group_by(path) %>%
+  mutate(freq = paste0(round(100 * (count/sum(count)),2), "%"))%>%
+  filter(count > 0 ) %>% arrange(desc(count))%>%
+  ggplot( aes(x = resumecompletefl, y = count, fill = path)) +
+  geom_bar(stat = "identity", color = "black")+
+  geom_text(aes(label = freq, vjust= 1))+
+  facet_wrap(~path, scale = "free_y")+ 
+  theme_light() + 
+  theme(legend.position = "none")+
+  labs(title = "Resume Completed By Page Path",
+       caption = "1 = Resume Completed & 0 = Resume Incomplete", 
+       x = "Resume Complete Or Not")
+
+```
+
+## **LJC Activity, Time it Takes For Resumes to be Completed & Time Since Last Visit**
+
+
+```{r, echo=FALSE, warning=FALSE}
+library(dplyr)
+df$access.Date <- as.POSIXct(df$access.Date)
+df$Resume.Date <- as.POSIXct(df$Resume.Date)
+table(df$rightaway)
+summary(df$Res_lapse)
+
+df$Res_lapse %>%
+  subset(df$Res_lapse > 1 & df$Res_lapse < 20) %>%
+  summary(df$Res_lapse)
+
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
+library(ggplot2)
+df %>%
+  subset(df$Res_lapse > 1) %>%
+  ggplot(aes(x = Res_lapse)) +
+  geom_bar(color = "blue")+
+  theme_light()+
+  labs(title = "Distrubtion of Lasped Time In Day for Resume Completion",
+       subtitle = "LJC Members", x = "Lapsed Time In Days", y ="Frequency")
+
+ggplot(subset(df, !(df$Res_lapse <= 3)), aes(y =Res_lapse, x = path, color = path))+
+  geom_boxplot()+
+  theme_light()+
+  ggtitle("Number of Days by Reg Source to Complete Thier Resume", 
+          "Showing only Observations with Days Lasped of 3 or greater")+
+  xlab("Registration Source")+
+  ylab("Number Of Days")+ 
+  theme(axis.text.x = element_text(angle = 50, hjust = 1, size = 7))
+```
+
+## **Looking At The Number of Applications**
+
+```{r, echo=FALSE, warning=FALSE}
+df_na$Res_lapse <- -1
+df_na$rightaway <- -1
+df = rbind(df, df_na)
+
+#Calcuate How Many Days This Indvidual Has Been A Member
+df$Membership_days <- round(difftime(Sys.Date(), df$Reg.Date, units = "days"),0)
+#df$Membership_days <- ifelse(df$Membership_days < 1, 0, df$Membership_days)
+df$Membership_days <- as.numeric(df$Membership_days)
+
+#Time since they were last on the LJC Website
+df$visit_lapse <- round(difftime(Sys.Date(), df$access.Date, units = "days"), 0)
+df$visit_lapse <- ifelse(df$visit_lapse < 1, 0, df$visit_lapse)
+df$visit_lapse <- as.numeric(df$visit_lapse)
+
+
+df$Re_Visit <- ifelse(df$Membership_days == df$visit_lapse, 0, 1)
+#Metric to messure if the number of days between last visit and membership days 
+#This is going to give us a metric to know how long since they signed up and their last visit
+#ie: if you have 87 days it means that you became a memember 87 days ago and have come back x amount of days later
+#Kinda of a metric to give us an idea of how many people come back (Explore this more later)
+df$Days <- df$Membership_days - df$visit_lapse
+
+df_na$Membership_days <- 0
+df_na$visit_laspe <- -1
+df_na$Re_Visit <- 0
+df_na$Days <- -1
+
+#table(df$Re_Visit)
+
+#mean(df$visit_lapse)
+
+df %>% 
+  group_by(df$Re_Visit) %>%
+  summarise(
+    Total = n(),
+    Avg_LastVisit = mean(visit_lapse),
+    Apps_Sent = sum(applicationcount)
+  )
+
+df$check<-as.factor(df$Re_Visit)
+```
+
+
+```{r  , echo=FALSE}
+library(ggplot2)
+ggplot(df, aes(visit_lapse, fill = path)) +
+  stat_bin(geom = "bar", bins = 50, alpha = .58)+
+  facet_wrap(~path, scales="free_y")+
+  theme_light()+
+  theme(legend.position ="none")+
+  labs(title = "Distrubtion of Time Since Last Visit In Days")
+
+plot = df %>% 
+  group_by(path) %>% 
+  summarise(
+    n = n(), 
+    min = min(visit_lapse), 
+    max = max(visit_lapse), 
+    mean = mean(visit_lapse),
+    median = median(visit_lapse),
+    Apps = sum(applicationcount)
+  ) %>%
+   arrange(desc(mean))
+
+ggplot(plot, aes(x = reorder(path, -mean), y = n, fill = path)) +
+  geom_bar(stat = "identity")+
+  xlab("Reg Source")+
+  geom_text(aes(label= round(mean), vjust=-.3))+
+  theme_light()+
+  theme(axis.text.x = element_text(angle = 40, hjust = 1, size = 7), legend.position = "none")+
+  labs(title = "Ordered by Average Days Since Last Visiting LJC", 
+       subtitle = "Numbers Above Bars Represents the Mean Days Since Logging Back on LJC",
+       x = "Registration source", y = "Amount Of LJC Members")
+```
+
+
+```{r,echo=FALSE, include = FALSE, warning=FALSE}
+Last6.added %>%
+  group_by(resumecompletefl)%>% 
+  summarise(
+    apps = sum(applicationcount)
+  )
+
+df %>% 
+  summarise(
+    n = sum(is.na(df$Resume.Date))
+  )
+```
+
