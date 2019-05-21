@@ -1,5 +1,5 @@
 # Data-Projects
-This Is A Repository Of Recent and Older Projects Done  (Machine Learning, Deep Learning, Kaggle Competitions)
+This is repository of recent and older projects (Machine Learning, Deep Learning, Kaggle Competitions)
 These are random projects that I have done over the years and I wanted to put them up on GitHub.
 These notebooks are in python and in R and are just for me to go back a look on them to see the growth that I am making.
 I would like to thank Fastai and Jeremy Howard personally for creating the community of passionate individuals. 
