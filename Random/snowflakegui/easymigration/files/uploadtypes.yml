@@ -1,0 +1,6 @@
+snowflake:
+  int: int
+  float: float
+  str: varchar(255)
+  object: varchar(255)
+  date: date

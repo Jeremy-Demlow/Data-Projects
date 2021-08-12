@@ -1,0 +1,13 @@
+pandas
+matplotlib
+numpy
+scikit-learn
+jupyter
+beautifulsoup4
+seaborn
+boto3
+ruamel.yaml
+requests
+pandas_datareader
+pyarrow
+psycopg2

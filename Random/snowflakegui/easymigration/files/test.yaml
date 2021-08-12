@@ -1,0 +1,8 @@
+local:
+    query:
+        blob_path: 'query'
+        account_name: 'easymigratioon'
+        container_name: 'testing'
+        file_name: 'testing.txt'
+        sql: "select * from testing;"
+        push_file: 'testing.csv'

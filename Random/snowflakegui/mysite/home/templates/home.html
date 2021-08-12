@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+
+<body id="page-top">
+
+
+  <header class="bg-dark text-white">
+    <div class="container text-center p-2">
+      <h1>Welcome to Easy Migration</h1>
+      <p class="lead">A no-code solution, simplying complex ETL process for all data professionals</p>
+    </div>
+  </header>
+
+  <section id="about">
+    <div class="container p-4"">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h4>About the Product</h4>
+          <p class="lead">
+            Easy Migration provides an easy to use, code free to solution for ETL processes that consistently
+            slow down the analytics process. Business analysts, data scientists, and even data engineers spend
+            a lot of time and effort moving data from one place to another. Even worse, they have to write hundreds
+            of lines of code to do it. Easy migration removes the need for any code to be written in our ETL processes,
+            empowering modern data professionals to take advantage of powerful cloud computing options without needing
+            to develop their own data pipelines.
+          </p>
+          <p>
+            To learn more about our processes and company, please view our <a href="/about">about us page</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="bg-light">
+    <div class="container p-4"">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h4>How Easy Is It? - Data to Snowflake in 30 Seconds!</h4>
+          <p>
+            <img src="{% static 'img/demo.gif' %}" class="img-fluid center">
+          </p>
+          <p>
+            To get a more detailed description of using one of our ETL processes,
+            please view our <a href="/tutorials">tutorials page</a> or <a href="/contact">contact us</a> for a demo!
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="container p-4"">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h4>ETL Processes We Provide</h4>
+          <p class="lead">
+            Easy Migration currenlty focuses on Snowflake operations due to the large ammount of code needed for 
+            reasonably routine Snowflake table operations. We currently have the functionality for the following 
+            operations.
+          </p>
+          <ul>
+            <li>Flat file table creations</li>
+            <li>Flat file table replacements</li>
+            <li>Flat file table appending</li>
+            <li>Azure blob file persistence</li>
+            <li>File inserations to snowflake with no cloud storage needed</li>
+          </ul>
+          <p>
+            To try out one of our processes, please view our ETL processes <a href="/etl-processes">here</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="bg-light"> 
+    <div class="container p-4"">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <h4>Contact Us</h4>
+          <p class="lead">
+            If you are interested in contact the Easy Migration team regarding a trial version of the software, 
+            beta testing permissions, or if you are just curious about the project, please view our
+            <a href="/contact">contact page</a> and send us a message!
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+
+{% endblock %}

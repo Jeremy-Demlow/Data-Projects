@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+
+<script src="{% static 'js/snowflake_job_status.js' %}"></script>
+<script type='text/javascript'> job_state("{{ task_id }}"); </script>
+
+<h2 style="padding-top: 20px; padding-right: 20px; padding-left: 20px">ETL Job Status</h2>
+
+<div style="padding-right: 20px; padding-left: 20px" id="loading">
+    <span id="progress_pic"></span>
+</div>
+
+<h3 style="padding-top: 20px; padding-right: 20px; padding-left: 20px">Job Details</h3>
+
+<div style="padding-right: 20px; padding-left: 20px">
+    <b>Job ID:</b> {{ task_id }}
+</div>
+
+<div style="padding-right: 20px; padding-left: 20px" id="status">
+    <b>Job Status:</b> <span id="job_status"></span>
+</div>
+
+<div style="padding-right: 20px; padding-left: 20px" id="desc">
+    <b>Status Description:</b> <span id="job_description"></span>
+</div>
+
+<div style="padding-right: 20px; padding-left: 20px" id="desc">
+    <b>Snowflake Response:</b> <span id="job_responce"></span>
+</div>
+
+<!-- <h2 style="padding-top: 20px; padding-right: 20px; padding-left: 20px">ETL Inputs</h2>
+<ul class="list-group" style="padding-top: 20px; padding-right: 20px; padding-left: 20px">
+    <li class="list-group-item"><b>Cloud Storage</b> - {{ storage_info.cloud_type }}</li>
+    <li class="list-group-item"><b>Table Operation</b> - {{ storage_info.table_type }}</li>
+    <li class="list-group-item"><b>Azure Blob Storage Account</b> - {{ storage_info.blob_account }}</li>
+    <li class="list-group-item"><b>Azure Blob Container</b> - {{ storage_info.container }}</li>
+    <li class="list-group-item"><b>Snowflake User</b> - {{ storage_info.sf_user }}</li>
+    <li class="list-group-item"><b>Snowflake Server</b> - {{ storage_info.sf_server }}</li>
+    <li class="list-group-item"><b>Snowflake Database</b> - {{ storage_info.sf_db }}</li>
+    <li class="list-group-item"><b>Snowflake Warehouse</b> - {{ storage_info.sf_wh }}</li>
+    <li class="list-group-item"><b>Snowflake Table</b> - {{ storage_info.sf_table }}</li>
+    <li class="list-group-item"><b>Snowflake Schema</b> - {{ storage_info.sf_schema }}</li>
+    <li class="list-group-item"><b>Snowflake Role</b> - {{ storage_info.sf_role }}</li>
+    <li class="list-group-item"><b>File to Upload</b> - {{ files.upsert_file.name }}</li>
+</ul> -->
+{% endblock %}

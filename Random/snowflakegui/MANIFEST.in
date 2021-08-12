@@ -1,0 +1,9 @@
+include settings.ini
+include LICENSE
+include CONTRIBUTING.md
+include README.md
+include easymigration/files/*.sql
+include easymigration/files/*.yaml
+include easymigration/files/*.yml
+include easymigration/files/*.csv
+recursive-exclude * __pycache__

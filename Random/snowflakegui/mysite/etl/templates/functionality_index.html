@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+
+<header class="bg-dark text-white">
+    <div class="container text-center p-3">
+      <h2>Select an ETL Process</h2>
+    </div>
+</header>
+
+<div class="container-fluid">
+    <div class="row p-3 justify-content-center">
+        {% for function in functions %}
+            <div class="card" style="max-width: 18rem;">
+                <img class="card-img-top" src="{% static function.image %}" alt="Card image">
+                <div class="card-body">
+                    <h5 class="card-title">{{ function.title }}</h5>
+                    <p class="card-text">{{ function.description }}</p>
+                    <a href="/etl/{{ function.form_path }}" class="btn btn-primary">Start ETL Process</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

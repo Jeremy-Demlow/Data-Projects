@@ -1,0 +1,8 @@
+name: sf
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - pip
+  - pip:
+    - -r file:requirements.txt

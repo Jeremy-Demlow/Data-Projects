@@ -1,0 +1,25 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+<h3 style="padding-top: 20px; padding-right: 20px; padding-left: 20px">Easy Migration Profile</h3>  
+    {% if request.user.is_authenticated %}
+        <ul class="list-group" style="padding-top: 20px; padding-right: 20px; padding-left: 20px">
+            <li class="list-group-item"><b>Username</b> - {{ request.user.username }}</li>
+            <li class="list-group-item"><b>First Name</b> - {{ request.user.first_name }}</li>
+            <li class="list-group-item"><b>Last Name</b> - {{ request.user.last_name }}</li>
+            <li class="list-group-item"><b>Email</b> - {{ request.user.email }}</li>
+            <!-- <li class="list-group-item"><b>Access Level</b> - {{ request.user.groups }}</li> -->
+        </ul>
+        <div class="row" style="padding-top: 20px; padding-right: 20px; padding-left: 50px">
+            <a style="width: 200px" class="btn btn-dark" href="/accounts/logout" role="button">Log Out</a>
+        </div>
+    {% else %}
+        <div class="row" style="padding-top: 20px; padding-right: 20px; padding-left: 50px">
+            <p>Not user has been authenticated. Please log in to view your profile.</p>
+        </div>
+        <div class="row" style="padding-top: 0px; padding-right: 20px; padding-left: 50px">
+            <a style="width: 200px" class="btn btn-primary" href="/accounts/login" role="button">Login</a>
+        </div>
+    {% endif %}
+{% endblock %}

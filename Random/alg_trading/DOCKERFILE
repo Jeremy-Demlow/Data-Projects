@@ -1,0 +1,5 @@
+FROM Python:3.8
+
+ADD . /alg-trading
+RUN pip install -r /alg-trading/requirements.txt
+RUN pip install /alg-trading

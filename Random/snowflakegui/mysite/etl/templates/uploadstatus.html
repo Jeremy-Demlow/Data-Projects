@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+<h2 style="padding-top: 20px; padding-right: 20px; padding-left: 20px">ETL Inputs</h2>
+<ul class="list-group" style="padding-top: 20px; padding-right: 20px; padding-left: 20px">
+    <li class="list-group-item"><b>Blob Connection String</b> - {{ storage_info.connection_str }}</li>
+    <li class="list-group-item"><b>Blob SAS Token</b> - {{ storage_info.sas_token }}</li>
+    <li class="list-group-item"><b>Blob Container</b> - {{ storage_info.container }}</li>
+    <li class="list-group-item"><b>Snowflake User</b> - {{ storage_info.sf_user }}</li>
+    <li class="list-group-item"><b>Snowflake Password</b> - {{ storage_info.sf_password }}</li>
+    <li class="list-group-item"><b>Snowflake Database</b> - {{ storage_info.sf_db }}</li>
+    <li class="list-group-item"><b>Snowflake Warehouse</b> - {{ storage_info.sf_wh }}</li>
+    <li class="list-group-item"><b>Snowflake Table</b> - {{ storage_info.sf_table }}</li>
+    <li class="list-group-item"><b>Snowflake Schema</b> - {{ storage_info.sf_schema }}</li>
+    <li class="list-group-item"><b>File to Upload</b> - {{ files.upsert_file.name }}</li>
+</ul>
+<h2 style="padding-top: 20px; padding-right: 20px; padding-left: 20px">ETL Status</h2>
+<h3>{{ i }}</h3>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_content %}
+<h1 style="padding-top: 20px; padding-right: 20px; padding-left: 20px">About Easy Migration</h1>
+
+<div id="accordion" style="padding-top: 20px; padding-right: 20px; padding-left: 20px">
+    <div class="card">
+      <div class="card-header" id="headingOne">
+        <h5 class="mb-0">
+          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="False" aria-controls="collapseOne">
+            About the Tool
+          </button>
+        </h5>
+      </div>
+  
+      <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="card-body">
+            The Easy Migration ETL tool is a software that is designed to bring the power of ETL to the business
+            professional who does not come from a computer science background. Easy Migration focuses on taking
+            the necessity for code out of the ETL process, empowering business users to move common data objects
+            like csv files into powerful database systems like Snowflake.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" id="headingTwo">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            Potential Users
+          </button>
+        </h5>
+      </div>
+      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+        <div class="card-body">
+            <li style="padding-right: 20px; padding-left: 20px">
+                <b>Business Intelligence Analysts</b> - anyone who knows enough about SQL to empower analytics but don't have the
+                background in computer science to interface with modern database code.
+            </li>
+            <li style="padding-right: 20px; padding-left: 20px">
+                <b>Analytics Professionals</b> - people who are constantly being held back in their analytics capabilities because
+                they cannot perform necessary tasks on data extracts without them being in a modern database.
+            </li>
+            <li style="padding-right: 20px; padding-left: 20px">
+                <b>Data Engineers</b> - data engineers are constantly bombarded with ad-hoc data requests and do not always have time
+                to write stable ETL code for these one-off requests. Easy Migration can handle this for your data engineers in an
+                easy to use format.
+            </li>
+            <li style="padding-right: 20px; padding-left: 20px">
+                <b>Data Scientists</b> - are you an R wiz who can manipulate stats every which way but struggle to deal with data
+                loading once your results have been generated? Easy Migration can help alleviate these ETL pains with an easy to use
+                UI and fast tutorials.
+            </li>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" id="headingThree">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+            Why We Created Easy Migration
+          </button>
+        </h5>
+      </div>
+      <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+        <div class="card-body">
+            We decided to create Easy Migration based on many shared conversations about the difficulties
+            surrounding the ETL and how bussiness professionals are so many times shackled by needing too much
+            code in order to perform a simple ETL process. Easy Migration strives to make ETL accessible to
+            any business professional in a no-code, easy to use format.
+        </div>
+      </div>
+    </div>
+  
+    <div class="card">
+      <div class="card-header" id="headingFour">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+            About the Developers
+          </button>
+        </h5>
+      </div>
+      <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+        <div class="card-body">
+            Our software engineering team brings 20+ years of software experience to the table with a wide variety of
+            experience in data engineering, machine learning, and full stack engineering. The three lead developers for
+            Easy Migration have worked in a multitude of industries including financial services, hospitality and travel,
+            telecommunications, energy, consulting, and technology. In each of these fields, a common problem of hard to
+            access ETL arose in all of their jobs, bringing them together to build a solution for democratizing ETL.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" id="headingFive">
+        <h5 class="mb-0">
+          <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+            Want to Learn More?
+          </button>
+        </h5>
+      </div>
+      <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordion">
+        <div class="card-body">
+            If you are interested in learning more about the Easy Migration project, please contact us! We are more
+            than willing to provide demos and beta testing opportunities for our product as well. See the <a href="/contact">contact page</a>
+            for more information on how to contact us.
+        </div>
+      </div>
+    </div>
+
+</div>
+
+{% endblock %}
