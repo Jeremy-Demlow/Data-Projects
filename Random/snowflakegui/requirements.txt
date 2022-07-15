@@ -2,7 +2,7 @@ gunicorn
 psycopg2-binary
 django-crispy-forms
 Django==3.1.2
-django-celery-results==1.2.1
+django-celery-results==2.4.0
 django-cors-headers==3.5.0
 snowflake-connector-python[pandas]
 snowflake-sqlalchemy==1.2.3
